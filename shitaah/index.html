@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Learning Roadmap</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+    }
+    .section {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 10px;
+        background: #1e293b;
+    }
+    .section h2 {
+        cursor: pointer;
+    }
+    .tasks {
+        margin-top: 10px;
+    }
+    label {
+        display: block;
+        margin: 5px 0;
+        cursor: pointer;
+    }
+    .progress {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>🚀 My Python + AI Roadmap</h1>
+
+<div id="app"></div>
+
+<script>
+const roadmap = [
+    {
+        title: "Phase 1: Python Basics",
+        tasks: [
+            "Variables & Data Types",
+            "Loops",
+            "Functions",
+            "Lists & Dictionaries",
+            "File Handling",
+            "Basic OOP"
+        ]
+    },
+    {
+        title: "Phase 2: Data Science",
+        tasks: [
+            "NumPy Basics",
+            "Pandas Data Handling",
+            "Data Cleaning",
+            "Matplotlib Graphs",
+            "Seaborn Visualization",
+            "Basic Statistics"
+        ]
+    },
+    {
+        title: "Phase 3: Projects",
+        tasks: [
+            "Analyze CSV Dataset",
+            "Create Graph Dashboard",
+            "Clean Messy Data",
+            "Mini Data Project"
+        ]
+    },
+    {
+        title: "Phase 4: Machine Learning",
+        tasks: [
+            "Train/Test Split",
+            "Linear Regression",
+            "Logistic Regression",
+            "Decision Trees",
+            "KNN Model",
+            "Model Evaluation"
+        ]
+    },
+    {
+        title: "Phase 5: Advanced AI",
+        tasks: [
+            "Neural Networks",
+            "PyTorch Basics",
+            "Image Classifier",
+            "Chatbot Project",
+            "Recommendation System"
+        ]
+    }
+];
+
+const app = document.getElementById("app");
+
+function saveState() {
+    const checkboxes = document.querySelectorAll("input[type=checkbox]");
+    const state = Array.from(checkboxes).map(cb => cb.checked);
+    localStorage.setItem("progress", JSON.stringify(state));
+}
+
+function loadState() {
+    const saved = JSON.parse(localStorage.getItem("progress")) || [];
+    const checkboxes = document.querySelectorAll("input[type=checkbox]");
+    checkboxes.forEach((cb, i) => {
+        cb.checked = saved[i] || false;
+    });
+}
+
+function render() {
+    roadmap.forEach((section, sIndex) => {
+        const div = document.createElement("div");
+        div.className = "section";
+
+        const title = document.createElement("h2");
+        title.textContent = section.title;
+        title.onclick = () => {
+            tasksDiv.style.display = tasksDiv.style.display === "none" ? "block" : "none";
+        };
+
+        const tasksDiv = document.createElement("div");
+        tasksDiv.className = "tasks";
+
+        section.tasks.forEach((task, tIndex) => {
+            const id = `task-${sIndex}-${tIndex}`;
+
+            const label = document.createElement("label");
+            const checkbox = document.createElement("input");
+
+            checkbox.type = "checkbox";
+            checkbox.id = id;
+            checkbox.onchange = () => {
+                saveState();
+                updateProgress();
+            };
+
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(" " + task));
+            tasksDiv.appendChild(label);
+        });
+
+        const progress = document.createElement("div");
+        progress.className = "progress";
+
+        div.appendChild(title);
+        div.appendChild(tasksDiv);
+        div.appendChild(progress);
+
+        app.appendChild(div);
+    });
+
+    loadState();
+    updateProgress();
+}
+
+function updateProgress() {
+    const sections = document.querySelectorAll(".section");
+
+    sections.forEach(section => {
+        const checkboxes = section.querySelectorAll("input[type=checkbox]");
+        const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+        const total = checkboxes.length;
+
+        section.querySelector(".progress").textContent =
+            `Progress: ${checked}/${total}`;
+    });
+}
+
+render();
+</script>
+
+</body>
+</html>
